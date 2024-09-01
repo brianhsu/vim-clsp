@@ -3,9 +3,11 @@ local vim = vim
 
 function module.run_normal_mode_command(float_win_id, parent_win_id, key)
     return function ()
-        vim.api.nvim_set_current_win(float_win_id)
-        vim.cmd.normal(vim.api.nvim_replace_termcodes(key, true, true, true))
-        vim.api.nvim_set_current_win(parent_win_id)
+        if vim.api.nvim_get_current_win() == parent_win_id then
+            vim.api.nvim_set_current_win(float_win_id)
+            vim.cmd.normal(vim.api.nvim_replace_termcodes(key, true, true, true))
+            vim.api.nvim_set_current_win(parent_win_id)
+        end
     end
 end
 
@@ -29,15 +31,13 @@ function module.unmap_keys(float_buf_id, parent_buf_id, keys)
     end
 end
 
-function module.create_unmap_key_autocmds(float_buf_id, float_win_id, parent_buf_id, keys)
+function module.call_when_window_closed(float_win_id, callback)
     local floting_win_group = vim.api.nvim_create_augroup('floating_win_group', { clear = true })
     vim.api.nvim_create_autocmd({ 'WinClosed' }, {
       pattern = tostring(float_win_id),
       group = floting_win_group,
-      callback = function()
-          module.unmap_keys(float_buf_id, parent_buf_id, keys)
-      end
-    })
+      callback = callback
+  })
 end
 
 return module

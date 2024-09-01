@@ -2,11 +2,15 @@ local M = {}
 local vim = vim
 local util = require('clsp/util')
 
+M.opened_win_id = nil
 M.config = {
     win_blend = 15,
     win_config = {
         title = "Documentation",
         border = "rounded",
+        width_calculator = function ()
+            return math.floor(vim.api.nvim_win_get_width(vim.api.nvim_get_current_win()) * 0.6)
+        end
     },
     keymap = {
         scroll_line_up = '<C-y>',
@@ -69,19 +73,43 @@ function M.floating_document_viewer(_, result, ctx, config)
 
     local float_buf_id, float_win_id = vim.lsp.handlers.hover(_, result, ctx, config)
 
+    M.opened_win_id = float_win_id
+
     setup_key_map(float_win_id, parent_win_id)
-    util.create_unmap_key_autocmds(float_buf_id, float_win_id, parent_buf_id, M.config.keymap)
+
+    util.call_when_window_closed(float_win_id, function ()
+        util.unmap_keys(float_buf_id, parent_buf_id, M.config.keymap)
+        M.opened_win_id = nil
+    end)
 
     vim.api.nvim_set_option_value('winblend', M.config.win_blend, {scope = 'local', win = float_win_id})
 end
 
-
-function M.setup()
-    M.config.win_config.width = math.floor(vim.api.nvim_win_get_width(vim.api.nvim_get_current_win()) * 0.75)
-
-    M.handler = vim.lsp.with(M.floating_document_viewer, M.config.win_config)
+function M.open_document_floating()
+    if M.config.win_config.width_calculator ~= nil then
+        M.config.win_config.width = M.config.win_config.width_calculator()
+    end
 
     vim.lsp.handlers["textDocument/hover"] = M.handler
+    vim.lsp.buf.hover()
+end
+
+function M.close_document_floating()
+    vim.api.nvim_win_close(M.opened_win_id, false)
+end
+
+function M.toggle_document_floating()
+    if M.opened_win_id ~= nil then
+        M.close_document_floating()
+    else
+        M.open_document_floating()
+    end
+end
+
+function M.setup()
+    M.handler = vim.lsp.with(M.floating_document_viewer, M.config.win_config)
+
+    vim.api.nvim_create_user_command('CLSPDocumentFloating', M.toggle_document_floating, {})
 end
 
 return M
