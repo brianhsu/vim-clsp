@@ -20,7 +20,7 @@ function module.unmap_keys(float_buf_id, parent_buf_id, keys)
 
     vim.api.nvim_set_current_buf(parent_buf_id)
 
-    for _, key in ipairs(keys) do
+    for _, key in pairs(keys) do
         vim.keymap.del('n', key, {buffer = true})
     end
 
