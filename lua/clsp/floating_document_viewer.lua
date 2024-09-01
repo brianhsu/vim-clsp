@@ -26,7 +26,7 @@ end
 
 function M.setup()
 
-    local handler = vim.lsp.with(
+    M.handler = vim.lsp.with(
         M.floating_document_viewer,
         {
             border = "rounded",
@@ -34,7 +34,7 @@ function M.setup()
         }
     )
 
-    vim.lsp.handlers["textDocument/hover"] = handler
+    vim.lsp.handlers["textDocument/hover"] = M.handler
 
 end
 
