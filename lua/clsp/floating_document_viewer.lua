@@ -106,7 +106,8 @@ function M.toggle_document_floating()
     end
 end
 
-function M.setup()
+function M.setup(config)
+    M.config = util.merge(M.config, config)
     M.handler = vim.lsp.with(M.floating_document_viewer, M.config.win_config)
 
     vim.api.nvim_create_user_command('CLSPDocumentFloating', M.toggle_document_floating, {})
