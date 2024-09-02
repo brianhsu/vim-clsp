@@ -11,12 +11,17 @@ I really like the simplicity and design simplicity around VIM-built in functiona
 This plugin only do the following four things:
 
 1. Expose some LSP lua function to user command, so I can call them more easily.
-2. Adjust the built-in signature helper function, so it could be semi transparent (winblend), and:
-    2.1 Make the behavior more sensible, for example, run `:CLSPSignatureHelp` twice will close the already opened window instead of focus to it.
-    2.2 Add a simple user command `:CLSPSignatureHelpToggleAlwaysOn` to toggle if the signature helper window should show up when `CursorHold`.
+2. Adjust the built-in signature helper function, so it could be semi-transparent (winblend), and:
+
+    - Make the behavior more sensible, for example, run `:CLSPSignatureHelp` twice will close the already opened window instead of focus to it.
+    - Add a simple user command `:CLSPSignatureHelpToggleAlwaysOn` to toggle if the signature helper window should show up when `CursorHold`.
+
 3. Provide a more sensible floating documentation viewer (vim.lsp.buf.hover).
-    3.1 Run ':CLSPDocumentationFloating' twice will close the window.
-    3.2 Add key binding to foucs / close / navigate the floating window.
+
+    - Run `:CLSPDocumentationFloating` twice will close the window.
+    - Add key binding to foucs / close / navigate the floating window.
+    - Support semi-transparent
+
 4. Provide a command to open documentation in (v)split window.
 
 If you are looking for something that's more advanced, [trouble.vim](https://github.com/folke/trouble.nvim) might be a better choice.
