@@ -41,7 +41,10 @@ function M.open_signature_viwer()
     end
 
     if M._opened_win_id == nil then
-        vim.lsp.buf.signature_help()
+        local params = vim.lsp.util.make_position_params(0, "utf-16")
+        vim.lsp.buf_request(0, 'textDocument/signatureHelp', params, function(err, result, ctx)
+            M.signature_help_viewer(err, result, ctx, M.config.win_config)
+        end)
     else
         vim.api.nvim_win_close(M._opened_win_id, false)
     end
@@ -50,9 +53,6 @@ end
 
 function M.setup(config)
     M.config = util.merge(M.config, config)
-    M.handler = vim.lsp.with(M.floating_document_viewer, M.config.win_config)
-
-    vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(M.signature_help_viewer, M.config.win_config)
 end
 
 return M

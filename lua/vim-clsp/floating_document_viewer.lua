@@ -89,8 +89,10 @@ function M.open_document_floating()
         M.config.win_config.width = M.config.win_config.width_calculator()
     end
 
-    vim.lsp.handlers["textDocument/hover"] = M.handler
-    vim.lsp.buf.hover()
+    local params = vim.lsp.util.make_position_params(0, "utf-16")
+    vim.lsp.buf_request(0, 'textDocument/hover', params, function(err, result, ctx)
+        M.floating_document_viewer(err, result, ctx, M.config.win_config)
+    end)
 end
 
 function M.toggle_document_floating()
@@ -107,7 +109,6 @@ end
 
 function M.setup(config)
     M.config = util.merge(M.config, config)
-    M.handler = vim.lsp.with(M.floating_document_viewer, M.config.win_config)
 end
 
 return M

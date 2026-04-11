@@ -85,13 +85,12 @@ function M.side_document_viewer(_, result, ctx, config)
 end
 
 function M.open_document_side()
-    vim.lsp.handlers["textDocument/hover"] = M.handler
-    vim.lsp.buf.hover()
+    local params = vim.lsp.util.make_position_params(0, "utf-16")
+    vim.lsp.buf_request(0, 'textDocument/hover', params, M.side_document_viewer)
 end
 
 function M.setup(config)
     M.config = util.merge(M.config, config)
-    M.handler = vim.lsp.with(M.side_document_viewer, {})
 end
 
 return M
