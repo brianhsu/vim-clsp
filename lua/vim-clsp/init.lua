@@ -10,13 +10,16 @@ function M.setup(config)
     local floating_document_viewer = require('vim-clsp/floating_document_viewer')
     local side_document_viewer = require('vim-clsp/side_document_viewer')
     local signature_viewer = require('vim-clsp/signature_viewer')
+    local diagnostic_viewer = require('vim-clsp/diagnostic_viewer')
 
     floating_document_viewer.setup(config.floating_document_viewer)
     side_document_viewer.setup(config.side_document_viewer)
     signature_viewer.setup(config.signature_viwer)
+    diagnostic_viewer.setup(config.diagnostic_viewer)
 
     vim.api.nvim_create_user_command('CLSPDocumentationFloating', floating_document_viewer.toggle_document_floating, {})
     vim.api.nvim_create_user_command('CLSPDocumentationSide', side_document_viewer.open_document_side, {})
+    vim.api.nvim_create_user_command('CLSPDiagnostic', diagnostic_viewer.toggle_diagnostic, {})
     vim.api.nvim_create_user_command('CLSPSignatureHelp', signature_viewer.open_signature_viwer, {})
     vim.api.nvim_create_user_command('CLSPSignatureHelpToggleAlwaysOn', signature_viewer.toggle_is_always_on, {})
 
